@@ -1,0 +1,50 @@
+
+header {
+    height: 350px;
+    background-image: url("background.jpg");
+    background-position: center;
+    background-size: cover;
+    background-repeat:  no-repeat;
+    position: relative;
+    
+    
+    /* #background-attachment: fixed; 고정 */
+}
+
+.header-text {
+    font-family: 'Nanum Pen Script', cursive;
+    color:white;
+    
+}
+.nav-item {
+    font-family: 'Nanum Pen Script', cursive;
+    /* font-family: 'Do Hyeon', sans-serif; */
+}
+.navbar-brand{
+    font-family: 'Nanum Pen Script', cursive;
+}
+footer{
+    height : 50px;
+    background-color : black;
+    color:white;
+}
+footer > span {
+    font-family: 'Do Hyeon', sans-serif;
+}
+
+.divider {
+    background-color : white;
+    width : 70px;
+}
+.container {
+    font-family: 'Do Hyeon', sans-serif;
+    color : white;
+}
+
+.modal-content {
+    color : white;
+    /* height: 100%; */
+}
+.modal-dialog {
+    margin-top : 10%;
+}

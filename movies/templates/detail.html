@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load youtube_thumbnail %}
+{% block content %}
+<div class="container animated zoomIn " style='background-color : rgba(0,0,0,0.3);'>
+    <h1>{{movie.title_kr}}</h1>
+    <p>{{movie.title_en}}</p>
+    
+    <button onclick="location.href='/movies/recommend/{{movie.pk}}'"class='btn btn-warning align-right'>추천영화보기</button>
+    <button onclick="location.href='/movies/similar/{{movie.pk}}'"class='btn btn-warning align-right'>비슷한영화보기</button>
+    <div class="media">
+        <img src="{{movie.poster_url}}" style='height:20rem' class="align-self-center mr-3 " alt="...">
+        <div class="media-body">
+            <p><줄거리></p>
+            
+            {{movie.overview}}
+            
+            {% for genre in movie.genres.all %}
+                <p>{{genre.name}}</p>
+            {% endfor %}
+        </div>
+    </div>
+    
+ 
+    <hr class="bg-light">
+    <h3>등장인물</h3>
+    <div class="container">
+        <div class="row">
+            {% for cast in actors %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 my-3 ">
+                <div class="view overlay zoom flex-center">
+                    <img src="{{cast.actor.image_url}}" style='height:15rem;' class="img-fluid content-center " alt="zoom">
+                    <div class="mask  waves-effect waves-light ">
+                        <p class="white-text flex-center">{{cast.character}} | {{cast.actor.name}}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    
+  
+    </div>   
+    <hr class="bg-light">
+    <div class="container">
+            <h3>예고편</h3>
+
+        <div class="row">
+    <!-- Button trigger modal -->
+            {% for video in movie.video_set.all %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 my-3 ">
+                <button type="button" class="btn btn-outline-light" data-toggle="modal" data-target="#bd-example-modal-xl_{{video.id}}" style=' overflow: hidden; text-overflow: ellipsis; weight:8rem; height:4rem;'>
+                    <i class="fab fa-youtube" style="color:red;"></i>{{ video.title }}
+                </button>
+                
+                <div class="modal fade" id="bd-example-modal-xl_{{video.id}}" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <iframe width="1140" height="600" src="{{video.videoUrl}}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            {% endfor %}
+            
+        </div>
+    </div>
+    <script>
+            item = document.getElementById('header');
+            item.style.backgroundImage = 'url("")'
+            item.style.height = '10px'
+            item.innerText = ''
+            // item = document.getElementsByTagName('body')[0];
+            // item.style.backgroundImage = 'url("{{movie.poster_url}}")'
+            // item.style.backgroundRepeat = 'no-repeat'
+            // item.style.backgroundSize = 'cover'
+    </script>
+    <style>
+        body {
+            background-image : url('{{movie.poster_url}}');
+            background-repeat:no-repeat;
+            background-size : cover;
+            background-color : rgba(255,255,255,0.3)
+            
+           
+        }
+        .back {
+            opacity : 0.3;
+             z-index : 100;
+        }
+    </style> 
+    
+{% endblock %}
+
+
+
+
+

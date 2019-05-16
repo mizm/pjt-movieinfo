@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load bootstrap4 %}
+{% block content %}
+
+
+<div class='m-3'></div>
+<div class='m-5'> </div>
+<div class="col-md-6 offset-md-3">
+    <div class="card col bg-dark border-light" style="width: 50rem;">
+        <img src="{% static 'signup.jpg' %}" class="card-img-top mt-2" alt="...">
+        <div class="card-body text-light">
+            <h5 class="card-title text-light">회원가입</h5>
+            <form method="POST">
+                {% csrf_token %}
+                {% bootstrap_form signup_form %}
+                <input type="submit" value="Submit"/>
+            </form>
+        </div>
+    </div>
+</div>
+<!--<p>-</p> -->
+<!--<div class='m-5'> <p></p> </div>-->
+<!--<div class='m-5'> </div>-->
+
+
+{% endblock %}
+
+

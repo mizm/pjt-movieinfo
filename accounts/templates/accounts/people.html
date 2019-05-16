@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load bootstrap4 %}
+
+{% block content %}
+
+
+
+<header class='row align-items-center justify-content-center'>
+    <h2 class='header-text text-center'>
+        <div class="row text-light">
+            <div class="col-3">
+                <h1>
+                    {% if people.profile.image %}
+                    <img src="{{ people.profile.image.url }}" class="rounded-circle" width="150" alt="{{ people.profile.image }}">
+                    {% else %}
+                    <img src="{% static 'basic1.jpg' %}" class="rounded-circle" width="150" alt="...">
+                    {% endif %}
+                    <hr>
+                </h1>
+            </div>
+            <!--팔로우-->
+            <div class="col-4">
+                <strong>{{ people.username }}</strong>
+                {% if user != people %}
+                    {% if user in people.followers.all %}
+                    <a href="{% url 'accounts:follow' people.id %}"><i class="fas fa-user-check" style="color:white" ></i></a>
+                    {% else %}
+                    <a href="{% url 'accounts:follow' people.id %}"><i class="far fa-user" style="color:white" ></i></a>
+                    {% endif %}
+                {% endif %}
+            </div>
+            <div class="col-8" style="" >
+                <i>Followers: </i> <i>{{ people.followers.count }}</i>
+                <!--{% for follower in people.followers.all %}-->
+                <!--    {{ follower }}-->
+                <!--{% endfor %}-->
+                <br>
+                <i>Followings: </i> <i>{{ people.followings.count }}</i>
+                <!--{% for following in people.followings.all %}-->
+                <!--    {{ following }}-->
+                <!--{% endfor %}-->
+            </div>
+        </div>
+    </h2>
+</header>
+<hr>
+<div class="container">
+    {% if user == people %}
+        <div>
+            <a href="{% url 'accounts:update' %}" style="color :white;">계정 정보 수정</a>
+        </div>
+    {% endif %}
+</div>
+
+{% include 'accounts/_people.html' %}
+
+
+{% endblock %}

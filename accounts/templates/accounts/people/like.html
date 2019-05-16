@@ -1,0 +1,55 @@
+{% for score in people.score_set.all %}
+  <div class="container">
+    <div class="card" style="max-width: 1100px; background-color : rgba(0,0,0,0.3); ">
+      <div class="row no-gutters">
+        <div class="col-2">
+          <a href="/movies/{{score.movie_id}}">
+            <img src="{{score.movie.poster_url}}" width='150' class="card-img" alt="...">
+          </a>
+          
+        </div>
+        <div class="col-10 text-light">
+          <div class="card-body">
+            <h5 class="card-title">
+              {{score.movie.title_kr}}<br>
+              {% if score.movie.avgScore < 2 %}
+                <i class="fas fa-star" style='color:yellow;' ></i>
+              {% elif score.movie.avgScore < 3 %}
+                <i class="fas fa-star" style='color:yellow;' ></i><i class="fas fa-star" style='color:yellow;' ></i>
+              {% elif score.movie.avgScore < 4 %}
+                <i class="fas fa-star" style='color:yellow;' ></i><i class="fas fa-star" style='color:yellow;' ></i><i class="fas fa-star" style='color:yellow;'></i>
+              {% elif score.movie.avgScore < 5 %}
+                <i class="fas fa-star" style='color:yellow;' ></i><i class="fas fa-star" style='color:yellow;' ></i><i class="fas fa-star" style='color:yellow;'></i><i class="fas fa-star" style='color:yellow;' ></i>
+              {% else %}
+                <i class="fas fa-star" style='color:yellow;' ></i><i class="fas fa-star" style='color:yellow;' ></i><i class="fas fa-star" style='color:yellow;' ></i><i class="fas fa-star" style='color:yellow;' ></i><i class="fas fa-star" style='color:yellow;' ></i>
+              {% endif %} 
+              {{score.movie.avgScore}}
+              
+              
+            </h5>
+            <p class="card-text text-light">
+              {{score.movie.overview}}
+            </p>
+            <br>
+            <h6>My Review</h6>
+            <p class="card-text text-light">
+              {% if score.score == 1 %}
+                <i class="fas fa-star" style='color:yellow;' ></i>
+              {% elif score.score == 2 %}
+                <i class="fas fa-star" style='color:yellow;' ></i><i class="fas fa-star" style='color:yellow;' ></i>
+              {% elif score.score == 3 %}
+                <i class="fas fa-star" style='color:yellow;' ></i><i class="fas fa-star" style='color:yellow;' ></i><i class="fas fa-star" style='color:yellow;'></i>
+              {% elif score.score == 4 %}
+                <i class="fas fa-star" style='color:yellow;' ></i><i class="fas fa-star" style='color:yellow;' ></i><i class="fas fa-star" style='color:yellow;'></i><i class="fas fa-star" style='color:yellow;' ></i>
+              {% else %}
+                <i class="fas fa-star" style='color:yellow;' ></i><i class="fas fa-star" style='color:yellow;' ></i><i class="fas fa-star" style='color:yellow;' ></i><i class="fas fa-star" style='color:yellow;' ></i><i class="fas fa-star" style='color:yellow;' ></i>
+              {% endif %}  
+              {{ score.score }}- {{score.content}}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr>
+{% endfor %}

@@ -1,0 +1,50 @@
+{% for following in people.followings.all %}
+    {% for score in following.score_set.all %}
+      <div class="container">
+        <div class="card" style="max-width: 1100px; background-color : rgba(0,0,0,0.3);">
+          <div class="row no-gutters">
+            <div class="col-1">
+              <a href="/movies/{{score.movie_id}}">
+                <img src="{{score.movie.poster_url}}" width='90' height='118' class="card-img" alt="...">
+              </a>
+              
+            </div>
+            <div class="col-11">
+              <div class="card-body">
+                <h5 class="card-title text-light">{{score.movie.title_kr}}</h5>
+                <div class="row">
+                  <div class="col-3">
+                  <p class="card-text text-light">
+                    {% if score.score == 1 %}
+                      <i class="fas fa-star" style='color:yellow;' ></i>
+                    {% elif score.score == 2 %}
+                      <i class="fas fa-star" style='color:yellow;' ></i><i class="fas fa-star" style='color:yellow;' ></i>
+                    {% elif score.score == 3 %}
+                      <i class="fas fa-star" style='color:yellow;' ></i><i class="fas fa-star" style='color:yellow;' ></i><i class="fas fa-star" style='color:yellow;'></i>
+                    {% elif score.score == 4 %}
+                      <i class="fas fa-star" style='color:yellow;' ></i><i class="fas fa-star" style='color:yellow;' ></i><i class="fas fa-star" style='color:yellow;'></i><i class="fas fa-star" style='color:yellow;' ></i>
+                    {% else %}
+                      <i class="fas fa-star" style='color:yellow;' ></i><i class="fas fa-star" style='color:yellow;' ></i><i class="fas fa-star" style='color:yellow;' ></i><i class="fas fa-star" style='color:yellow;' ></i><i class="fas fa-star" style='color:yellow;' ></i>
+                    {% endif %}
+                    
+                  </p>
+                </div>
+                <div class="col-8">
+                  <p class="card-text text-light">
+                     {{score.content}}
+                  </p>
+                </div>
+                <div class="col-3">
+                  <p class="card-text text-light">
+                     username: {{following}}
+                  </p>
+                </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr>
+    {% endfor %}
+{% endfor %}

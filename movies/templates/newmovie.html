@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div id= 'container'>
+        <form class='form-inline m-2'>
+            <input type="text" class = 'form-control m-1' v-model ='searchText' @keyup.enter='searchMovie()' placeholder='search movie'>
+            <button type="button" class= 'btn btn-light' @click='searchMovie()'>찾기</button>
+        </form>
+        <section v-show="viewList" class="card-columns mt-3 container" >
+            <article v-for='movie in movieList' style="width: 18rem; height : 42rem;" class="card bg-dark border-light">
+                <img class="card-img-top"   v-bind:src = 'movie.poster_url' style ="height : 25rem;"alt="Card image cap">
+                <div class="card-body"> 
+                    <h5 class="card-title">[[movie.title]] </h5> 
+                    <p class="card-text" style = 'overflow: hidden; text-overflow: ellipsis; height : 7rem;' >영화 줄거리 : [[movie.overview]] </p>
+                    <button @click='createMovie(movie)'class='btn btn-warning flex-right'>추가</button> 
+                </div>
+            </article>
+        </section> 
+    </div>
+
+    <script>
+        const container = new Vue({
+            delimiters: ['[[', ']]'],
+            el : '#container',
+            data :
+            {
+                searchText : '',
+                viewList : false,
+                movieList : {},
+            },
+            methods:
+            {
+                searchMovie : function(){
+                    console.log(this.searchText)
+                    if(this.searchText.trim() !== '')
+                    {
+                        axios.get('https://api.themoviedb.org/3/search/movie?page=1&include_adult=false',
+                            {params : {
+                                api_key : '8f03cc345840b05e82681223f1ff0d74',
+                                query : this.searchText,
+                                language: 'ko-kr'
+                            }})
+                            .then((res) =>{
+                                if(!this.viewList) this.viewList = true
+                                console.log(res.data.results)
+                                this.movieList = res.data.results
+                                this.movieList.forEach((movie) => {
+                                    movie.poster_url = `https://image.tmdb.org/t/p/original${movie.poster_path}`
+                                    
+                                })
+                            })
+                            
+                    }
+                },
+                createMovie : function(movie){
+                    axios.defaults.xsrfHeaderName = "X-CSRFToken";
+                    axios.defaults.xsrfCookieName = "csrftoken";
+                    // data = {'code':movie.Cd,'sType':'movie','titleYN':'','etcParam':'Y','isOuterReq':false}
+                    // // type,code,'','Y','',createNewDtlLayer())=='err'
+                    // // data = JSON.stringify(movie);
+                    // console.log(data);
+                    axios.post(`/movies/createmovie`,movie)
+                        .then((res) => {
+                            console.log(res)
+                            alert(res.data.message)
+                        })
+                }
+            }
+        })
+    </script>
+    
+{% endblock %}

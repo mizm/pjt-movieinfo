@@ -1,0 +1,365 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    
+    <div class="container ">
+        
+    <div id='modalvue'>
+        <div class='subtitle mb-0'>
+            <div class='md-form flex-center' style = "position:relative;">
+                <i class="fas fa-search prefix" @click = 'crapThanos()' style ='position:relative; left:0;'></i>
+                <input v-model ='searchText' type="text" class="form-control form-control-sm mx-2" style='display:inline; width:60rem; color:white;' />　
+                <i class="far fa-caret-square-down fa-2x" @click="genreselect()"style = 'position:relative; right:0;'></i>
+            </div>
+            <!--<hr class='bg-light'>-->
+        </div>
+        <transition name="fade"  enter-to-class="animated fadeInDown" leave-to-class='animated fadeOutUp'>
+        <div v-show='genresView' class = "container border border-light mt-0" style = 'width:64rem'>
+            <div class="row">
+                <div v-for='genre in genres' class="col-12 col-sm-6 col-md-4 col-lg-3 my-3">
+                    <div class="custom-control custom-checkbox custom-control ">
+                      <input type="checkbox" class="custom-control-input" :id=`defaultInline${genre.genre_id}` :value=`${genre.genre_id}` v-model='checkedGenre'>
+                      <label class="custom-control-label" :for=`defaultInline${genre.genre_id}`>[[genre.name]]</label>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        </transition>
+        <div v-show='loading' class='subtitle m-5 text-center'>
+            <i class="fas fa-spinner animated rollIn infinite"></i>
+        </div>
+        <div class="row">
+            <transition v-for='(movie,index) in movies' name="ca" leave-active-class = 'animated bounceOut' enter-active-class = 'animated bounceIn' :key='movie.movie_id' >
+            <div v-show='search(movie.title_kr) && searchGenre(movie.genres) && index < pages' class="col-12 col-sm-6 col-md-4 col-lg-3 my-3 ">
+                <div class="card bg-dark border-light animated bounceIn " v-show='checkThanos()'>
+                    <div class ='view overlay'>
+                        <img :data-target=`#movie${movie.movie_id}_modal` data-toggle='modal' v-bind:src='movie.poster_url' class="card-img-top"
+                        alt="말모이" style="height:25rem;">
+                        <div :id =`movie_mask_${movie.movie_id}` class="mask flex-center rgba-stylish-strong" :data-target=`#movie${movie.movie_id}_modal` data-toggle='modal' >
+                             <p class="text-warning text-right"><span v-for= 'number in numbers' v-if='movie.score_set.avgScore>=number' class = 'fas fa-star animated bounce delay-1s infinite' style='color:yellow;'></span>  [[movie.score_set.avgScore]]점</p>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-title" style = 'overflow: hidden; text-overflow: ellipsis; height : 2rem;'>[[movie.title_kr]] <span class="badge badge-success"> </span></h4>
+                        <hr class="bg-light">
+                        <a :href=`/movies/${movie.movie_id}` class="btn btn-blue-grey">영화정보
+                            보러가기</a>
+                    </div>
+                    
+                </div>
+            </div>
+            </transition>
+        </div>
+    
+
+    <div v-for='movie in movies' class="modal fade" :id=`movie${movie.movie_id}_modal` tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl magin-top:200px;" role="document">
+            <div class="modal-content text-light bg-dark m-0 p-0">
+                <div class="modal-header p-0">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-8 p-0 border border-light">
+                                <div :id=`carouselExampleControls${movie.movie_id}` class="carousel slide" data-ride="carousel">
+                                    <ol class="carousel-indicators">
+                                        <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                                        <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                                        <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                                    </ol>
+                                    <div class="view overlay">
+                                        <div class="carousel-inner m-0 p-0">
+                                            <div class="carousel-item active">
+                                                <img v-bind:src='movie.poster_url' class="d-block w-100" alt="말모이">
+                                            </div>
+                                        </div>
+                                        <div class="mask flex-center rgba-stylish-strong" :data-target=`#movie${movie.movie_id}_modal` data-toggle='modal' >
+                                            <p class="text-light text-center m-4">[[movie.overview]]</p>
+                                        </div>
+                                    </div>
+                                    <a class="carousel-control-prev" :href=`#carouselExampleControls${movie.movie_id}` role="button"
+                                        data-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="sr-only">Previous</span>
+                                    </a>
+                                    <a class="carousel-control-next" :href=`#carouselExampleControls${movie.movie_id}` role="button"
+                                        data-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="sr-only">Next</span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-4 border border-light align-items-center">
+                                <h5 class="modal-title m-2" id="exampleModalLabel">[[movie.title_kr]]</h5>
+                                <div>
+                                    <p class="text-warning text-right"><span v-for= 'number in numbers' v-if = 'movie.score_set.avgScore>=number' class = 'fas fa-star fa animated bounce delay-1s infinite' style='color:yellow;'></span>  [[movie.score_set.avgScore]]점</p>
+                                     
+                                </div>
+                               
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <div class="m-2">
+                                    <hr class="bg-light">
+                                        <span @mouseover='check(1,movie.movie_id)' :id =`star_${movie.movie_id}` class="far fa-star fa-3x " style='color:yellow;'></span>
+                                        <span @mouseover='check(2,movie.movie_id)' :id =`star_${movie.movie_id}` class="far fa-star fa-3x " style='color:yellow;'></span>
+                                        <span @mouseover='check(3,movie.movie_id)' :id =`star_${movie.movie_id}` class="far fa-star fa-3x " style='color:yellow;'></span>
+                                        <span @mouseover='check(4,movie.movie_id)' :id =`star_${movie.movie_id}` class="far fa-star fa-3x " style='color:yellow;'></span>
+                                        <span @mouseover='check(5,movie.movie_id)' :id =`star_${movie.movie_id}` class="far fa-star fa-3x " style='color:yellow;'></span>
+                                        
+                                        <input v-model='comments' class ='form-control mt-3' style='width:70%;display:inline;'  type="text" placeholder ='comment를 입력하세요'> 
+                                        <button class ='btn btn-light' @click="createScore({{user.pk}},'{{user.username}}', movie)">+</button>
+                                    <hr class="bg-light">
+                                    
+                                    <ul>
+                                        <li v-for='comment in movie.score_set'>[[comment.username]] > [[comment.score]]점 
+                                        <span v-for= 'number in numbers' v-if = 'comment.score>=number' class = 'fas fa-star' style='color:yellow;'></span>
+                                        <span v-else class = 'far fa-star' style='color:yellow;'></span> 
+                                        <br> <p :id=`comment_${comment.id}`>- [[comment.content]] 　
+                                        <i @click='deletecomment(comment.id,movie)' v-if='comment.username === "{{user.username}}"' class="fas fa-trash-alt"></i>
+                                        </p>
+                                        </li>
+                                    </ul> 
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    
+    </div>
+    <script>
+        const app = new Vue({
+            delimiters: ['[[', ']]'],
+            el : '#modalvue',
+            data : {
+                rating:1,
+                pages:8,
+                comment_set : {},
+                numbers : [1,2,3,4,5],
+                comments : '',
+                username : '',
+                searchText : '',
+                movies : {},
+                loading : true,
+                genres : {},
+                genresView : false,
+                checkedGenre : [],
+                thanos : false,
+                updatestatus : false
+            },
+            methods : {
+                updatecd : function(comment_id)
+                {
+                   return this.comment_set[comment_id]
+                    
+                },
+                updateform : function(movie,comment_id)
+                {
+                    this.updatestatus = true;
+                    this.comment_set[comment_id] = !this.comment_set[comment_id]
+                    console.log(this.comment_set[comment_id])
+                },
+                crapThanos : function () {
+                    this.thanos = !this.thanos
+                },
+                checkThanos : function () {
+                  if(this.thanos)
+                  {
+                    if(this.thanos){
+                        const result = Math.floor(Math.random() * 2) + 1;
+                        if(result == 1)
+                            return true
+                        else
+                            return false
+                    }
+                   
+                  }
+                  else {
+                      return true
+                  }
+                },
+                searchGenre : function(moviegenres){
+                    if(this.checkedGenre.length === 0){
+                        return true
+                    }
+                    r = false
+                    this.checkedGenre.forEach((genre) => {
+                        moviegenres.forEach((g)=>{
+                            console.log(genre,g)
+                            if(g.genre_id == genre)
+                                r = true
+                        })
+                    })
+                    return r
+                
+                },
+                genreselect : function () {
+                    this.genresView = !this.genresView
+                },
+                search : function(title){
+                    if(this.searchText.trim() == "")
+                        return true
+                    else {
+                        console.log(title)
+                    if(title.trim().indexOf(this.searchText) >= 0)
+                        return true
+                    else 
+                        return false
+                    }
+                },
+                check : function(c,movie_id) {
+                    console.log(c)
+                    this.rating = c;
+                    
+                    stars = document.querySelectorAll(`#star_${movie_id}`)
+                    k = 1;
+                    for(i of stars)
+                    {   
+                        if(k > c)
+                            i.className = 'far fa-star fa-3x';
+                        else
+                            i.className = 'fas fa-star fa-3x';
+                        k++;
+                    }
+                },
+                deletecomment : function(comment_id,movie)
+                {
+                    axios.get(`/movies/delete/comment/${comment_id}`)
+                        .then((res) => {
+                            console.log(res)
+                            movie.score_set = movie.score_set.filter((score) => {return score.id !== comment_id})
+                            i = 0
+                            s = 0
+                            movie.score_set.forEach((score) => {
+                                i++
+                                s += score.score
+                            })
+                            movie.score_set['avgScore'] = (s/i).toFixed(2)
+                        })
+                },
+                createScore : function(user_id,username,movie)
+                {
+                    console.log(user_id,username,movie)
+                    // // console.log(username)
+                    data = {
+                        movie : movie.movie_id,
+                        score : this.rating,
+                        content : this.comments,
+                        user_id : user_id
+                    }
+                    axios.defaults.xsrfHeaderName = "X-CSRFToken";
+                    axios.defaults.xsrfCookieName = "csrftoken";
+                    axios.post(`/movies/createscore`,data)
+                        .then((res) =>{
+                            console.log(res.data.message)
+                            movie.score_set.push({'id':res.data.message,'username':username,'score':this.rating,'content':this.comments})
+                            i = 0
+                            s = 0
+                            movie.score_set.forEach((comment)=>
+                            {
+                                s+=comment.score;
+                                i++;
+                            })
+                            movie.score_set["avgScore"] = (s/i).toFixed(2)
+                            this.comment = '' 
+                            this.rating = 1
+                        })
+                }
+            },
+            watch : {
+            },
+            mounted () {
+                rating = 1
+                axios.get(`/movies/get_genre/`)
+                    .then((res) => {
+                        this.genres = res.data
+                        // this.genres.forEach((genre) =>
+                        // {
+                        //     genre['checked'] = false
+                        // })
+                    })
+            }
+        })
+        window.onscroll = function(ev) {
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+                app.pages += 8;
+            }
+        }
+        window.onload = function () {
+            if({{point}} == 0)
+            {
+                axios.get(`/movies/get_movie/`)
+                    .then((res) => {
+                        console.log(res.data)
+                        app.movies = res.data
+                        app.movies.forEach((movie)=>
+                            {
+                                movie.score_set['avgScore'] = movie.avgScore
+                                
+                            })
+                        
+                        app.loading = false
+                    }
+                    
+                )
+            }
+            else if({{point}} == 1)
+            {
+                axios.get(`/movies/get_boxoffice/`)
+                    .then((res) => {
+                        console.log(res.data)
+                        app.movies = res.data
+                        app.movies.forEach((movie)=>
+                            {
+                                movie.score_set['avgScore'] = movie.avgScore
+                            })
+                        
+                        app.loading = false
+                    }
+                    
+                )
+            }
+            else if({{point}} == 2)
+            {
+                movie_id = {{movie_id}}
+                axios.get(`/movies/get_recommend/${movie_id}`)
+                    .then((res) => {
+                        console.log(res.data)
+                        app.movies = res.data
+                        app.movies.forEach((movie)=>
+                            {
+                                movie.score_set['avgScore'] = movie.avgScore
+                            })
+                        
+                        app.loading = false
+                    }
+                    
+                )
+            }
+            else if({{point}} == 3)
+            {
+                movie_id = {{movie_id}}
+                axios.get(`/movies/get_similar/${movie_id}`)
+                    .then((res) => {
+                        console.log(res.data)
+                        app.movies = res.data
+                        app.movies.forEach((movie)=>
+                            {
+                                movie.score_set['avgScore'] = movie.avgScore
+                            })
+                        
+                        app.loading = false
+                    }
+                    
+                )
+            }
+        }
+    </script>
+    </div>
+{% endblock %}
