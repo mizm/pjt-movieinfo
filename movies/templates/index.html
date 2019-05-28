@@ -106,9 +106,10 @@
                                         <span @mouseover='check(3,movie.movie_id)' :id =`star_${movie.movie_id}` class="far fa-star fa-3x " style='color:yellow;'></span>
                                         <span @mouseover='check(4,movie.movie_id)' :id =`star_${movie.movie_id}` class="far fa-star fa-3x " style='color:yellow;'></span>
                                         <span @mouseover='check(5,movie.movie_id)' :id =`star_${movie.movie_id}` class="far fa-star fa-3x " style='color:yellow;'></span>
-                                        
+                                    {% if user.is_authenticated %}    
                                         <input v-model='comments' class ='form-control mt-3' style='width:70%;display:inline;'  type="text" placeholder ='comment를 입력하세요'> 
                                         <button class ='btn btn-light' @click="createScore({{user.pk}},'{{user.username}}', movie)">+</button>
+                                    {% endif %}
                                     <hr class="bg-light">
                                     
                                     <ul>
